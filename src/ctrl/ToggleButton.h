@@ -25,8 +25,8 @@ public:
     
     ToggleButton()
     {
-        // The default shadow gives a look we don't want 
-        auto shadowToDelete = this->shadow;
+        // The default shadow gives a look we don't want.
+        shadowToDelete = this->shadow;
         this->fb->removeChild(shadowToDelete);
 
         // old one had default size 0
