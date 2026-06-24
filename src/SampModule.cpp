@@ -6,9 +6,8 @@
 
 #ifdef _SAMP
 
-#ifndef METAMODULE
 #include <osdialog.h>
-#else
+#ifdef METAMODULE
 #include "async_filebrowser.hh"
 #endif
 
