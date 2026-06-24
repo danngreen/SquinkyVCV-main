@@ -120,10 +120,16 @@ private:
     std::shared_ptr<SharedSoloStateOwner> sharedSoloStateOwner;
     
     // Only for master. This is used to send ping message down.
-    // It is dynamically allocated, but never freed (it leaks).
-    // We can't free it, because we can't know if it is still on use to
-    // send a message down the bus.
+    // In stock VCV Rack it is dynamically allocated but never freed (it leaks),
+    // because we can't know if it's still in use to send a message down the bus.
+    // On MetaModule, module removal pauses audio, resets the module's unique_ptr,
+    // then resumes - so no neighbor can read this after we're gone, and we can
+    // own it safely (no per-instance leak).
+#ifdef METAMODULE
+    std::unique_ptr<SharedSoloStateClient> stateForClient;
+#else
     SharedSoloStateClient* stateForClient = nullptr;
+#endif
 
     // both masters and expanders hold onto these.
     std::shared_ptr<SharedSoloState> sharedSoloState;
@@ -183,8 +189,12 @@ inline void MixerModule::allocateSharedSoloState()
 {
     assert(!sharedSoloStateOwner);
     sharedSoloStateOwner = std::make_shared<SharedSoloStateOwner>();
-    sharedSoloState =  sharedSoloStateOwner->state; 
+    sharedSoloState =  sharedSoloStateOwner->state;
+#ifdef METAMODULE
+    stateForClient = std::make_unique<SharedSoloStateClient>(sharedSoloStateOwner);
+#else
     stateForClient = new SharedSoloStateClient(sharedSoloStateOwner);
+#endif
    // initSoloState();        // master can do this right now, and only check once.
 }
 
@@ -226,7 +236,11 @@ inline void MixerModule::onRequestSoloState(bool pairedLeft)
             stateForClient->moduleNumber = 1;
             CommChannelMessage msg;
             msg.commandId = CommCommand_SetSharedState;
+#ifdef METAMODULE
+            msg.commandPayload = size_t(stateForClient.get());
+#else
             msg.commandPayload = size_t(stateForClient);
+#endif
             sendLeftChannel.send(msg);
         }
     }

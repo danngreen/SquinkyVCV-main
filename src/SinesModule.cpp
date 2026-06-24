@@ -85,7 +85,7 @@ SinesModule::SinesModule()
     SqTooltips::changeParamQuantity<SqTooltips::OnOffParamQuantity>(this, Comp::KEYCLICK_PARAM);
 
     onSampleRateChange();
-    printf("CALLING INIT\n"); fflush(stdout);
+    // printf("CALLING INIT\n"); fflush(stdout);
     blank->init();
 }
 
@@ -165,8 +165,7 @@ void SinesWidget::addDrawbars(SinesModule *module, std::shared_ptr<IComposite> i
         const float inputX = x;
         x += 4;
 
-        auto drawbar = new Drawbar();
-        drawbar=createParam<Drawbar>(Vec(x,drawbarY), module, Comp::DRAWBAR1_PARAM+i);
+        auto drawbar = createParam<Drawbar>(Vec(x,drawbarY), module, Comp::DRAWBAR1_PARAM+i);
 
         drawbar->DrawbarSvg(handles[i]);
         #ifdef METAMODULE
