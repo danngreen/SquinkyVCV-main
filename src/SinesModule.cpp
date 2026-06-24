@@ -165,8 +165,7 @@ void SinesWidget::addDrawbars(SinesModule *module, std::shared_ptr<IComposite> i
         const float inputX = x;
         x += 4;
 
-        auto drawbar = new Drawbar();
-        drawbar=createParam<Drawbar>(Vec(x,drawbarY), module, Comp::DRAWBAR1_PARAM+i);
+        auto drawbar = createParam<Drawbar>(Vec(x,drawbarY), module, Comp::DRAWBAR1_PARAM+i);
 
         drawbar->DrawbarSvg(handles[i]);
         #ifdef METAMODULE
