@@ -85,7 +85,7 @@ SinesModule::SinesModule()
     SqTooltips::changeParamQuantity<SqTooltips::OnOffParamQuantity>(this, Comp::KEYCLICK_PARAM);
 
     onSampleRateChange();
-    printf("CALLING INIT\n"); fflush(stdout);
+    // printf("CALLING INIT\n"); fflush(stdout);
     blank->init();
 }
 
